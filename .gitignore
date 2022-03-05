@@ -1,0 +1,18 @@
+# CONFIG
+.env
+config.json
+
+# Folders
+build
+.vscode
+tmp
+
+# Others
+cenux.qt.*
+*.expand
+*.bin
+*.o
+*.d
+*.a
+*.iso
+cenux.kernel
