@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "cedis/util.h"
 
 cedis_request_t *cedis_parse_request(const char *data)
 {
@@ -35,7 +36,7 @@ cedis_request_t *cedis_parse_request(const char *data)
 			strncpy(content, data + i, len);
 
 			if (!req->command->cmd)
-				req->command->cmd = strdup(content);
+				req->command->cmd = toLower(strdup(content));
 			else
 				req->command->args[curr_arg++] =
 					strdup(content);

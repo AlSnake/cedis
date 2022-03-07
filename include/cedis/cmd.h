@@ -7,5 +7,6 @@ typedef struct cedis_command {
 } cedis_command_t;
 
 void cedis_dump_command(cedis_command_t *command);
+int cedis_handle_command(cedis_command_t *command);
 
 #endif

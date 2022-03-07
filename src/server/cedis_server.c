@@ -56,8 +56,6 @@ int cedis_server_run(cedis_server_t *server)
 			continue;
 		}
 
-		// printf("Client Connected: %d\n", clifd);
-
 		char buf[1024] = { 0 };
 		ssize_t r = read(clifd, buf, sizeof(buf));
 		if (r == -1) {
@@ -73,7 +71,16 @@ int cedis_server_run(cedis_server_t *server)
 			continue;
 		}
 
-		cedis_dump_command(request->command);
+		// cedis_dump_command(request->command);
+
+		int ret = cedis_handle_command(request->command);
+		if (ret == -1) {
+			printf("COMMAND NOT FOUND: %s\n",
+			       request->command->cmd);
+		} else if (ret == 1) {
+			printf("FAILED TO EXECUTE COMMAND: %s\n",
+			       request->command->cmd);
+		}
 
 		shutdown(clifd, SHUT_RDWR);
 	}
