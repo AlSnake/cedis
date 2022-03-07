@@ -21,7 +21,7 @@ cedis_command_res_t *handle_command_command(cedis_command_t *command)
 	return create_response(0, NULL);
 }
 
-int handle_info_command(cedis_command_t *command)
+cedis_command_res_t *handle_info_command(cedis_command_t *command)
 {
 	puts("Cedis is an Implementation of Redis Server");
 	puts("Author: AlSnake");

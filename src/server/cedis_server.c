@@ -5,6 +5,8 @@
 #include "cedis/parser.h"
 #include "cedis/cmd.h"
 #include <string.h>
+#include "cedis/encoder.h"
+#include "cedis/reply.h"
 
 // int handle_cedis(char *data)
 // {
@@ -77,11 +79,19 @@ int cedis_server_run(cedis_server_t *server)
 		cedis_command_res_t *res =
 			cedis_handle_command(request->command);
 		if (!res) {
-			printf("COMMAND NOT FOUND: %s\n",
-			       request->command->cmd);
+			char *msg =
+				reply_unknown_command(request->command->cmd);
+			char *encoded = resp_error_encode(msg);
+
+			if (write(clifd, encoded, strlen(encoded)) == -1)
+				perror("write");
 		} else if (res->status != 0) {
-			printf("FAILED TO EXECUTE COMMAND: %s\n",
-			       request->command->cmd);
+			char *msg = reply_custom_message(request->command->cmd,
+							 "execution failed");
+			char *encoded = resp_error_encode(msg);
+
+			if (write(clifd, encoded, strlen(encoded)) == -1)
+				perror("write");
 		}
 
 		if (res && res->status == 0 && res->data) {

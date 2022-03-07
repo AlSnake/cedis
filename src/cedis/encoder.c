@@ -81,3 +81,23 @@ char *resp_bulk_string_encode(const char **data)
 
 	return encoded;
 }
+
+char *resp_error_encode(const char *data)
+{
+	size_t len = strlen(data) + 4;
+	char *encoded = malloc(len * sizeof(char));
+	if (!encoded) {
+		perror("malloc");
+		return NULL;
+	}
+
+	int written = snprintf(encoded, len, "-%s\r\n", data);
+	if (written <= 0 || written != len - 1) {
+		CLOG_DEBUG(
+			"resp_simple_string_encode snprintf: Written = %d, len = %ld",
+			written, len - 1);
+		return NULL;
+	}
+
+	return encoded;
+}
