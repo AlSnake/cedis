@@ -2,11 +2,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "cedis/encoder.h"
 
-// error return 1, success ret 0
-int handle_command_command(cedis_command_t *command)
+cedis_command_res_t *create_response(int status, void *data)
 {
-	return 0;
+	cedis_command_res_t *response = malloc(sizeof(cedis_command_res_t));
+	if (!response) {
+		perror("malloc");
+		return NULL;
+	}
+	response->status = status;
+	response->data = data;
+	return response;
+}
+
+cedis_command_res_t *handle_command_command(cedis_command_t *command)
+{
+	return create_response(0, NULL);
 }
 
 int handle_info_command(cedis_command_t *command)
@@ -14,17 +26,15 @@ int handle_info_command(cedis_command_t *command)
 	puts("Cedis is an Implementation of Redis Server");
 	puts("Author: AlSnake");
 	puts("Project: https://github.com/AlSnake/cedis");
-	return 0;
+	return create_response(0, NULL);
 }
 
-int handle_ping_command(cedis_command_t *command)
+cedis_command_res_t *handle_ping_command(cedis_command_t *command)
 {
-	if (!command->args[0]) {
-		printf("NO ARGS\n");
-	}
+	if (!command->args[0])
+		return create_response(0, resp_simple_string_encode("PONG"));
 
-	printf("PING COMMAND\n");
-	return 0;
+	return create_response(0, resp_bulk_string_encode(command->args));
 }
 
 void cedis_dump_command(cedis_command_t *command)
@@ -34,7 +44,7 @@ void cedis_dump_command(cedis_command_t *command)
 		printf("ARG: %s\n", command->args[i]);
 }
 
-int cedis_handle_command(cedis_command_t *command)
+cedis_command_res_t *cedis_handle_command(cedis_command_t *command)
 {
 	size_t cmd = 0;
 	const char *commands[] = { "command", "info", "ping" };
@@ -54,8 +64,8 @@ int cedis_handle_command(cedis_command_t *command)
 	case 3:
 		return handle_ping_command(command);
 	default:
-		return -1;
+		return NULL;
 	}
 
-	return -1;
+	return NULL;
 }

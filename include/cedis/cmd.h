@@ -6,7 +6,12 @@ typedef struct cedis_command {
 	char **args;
 } cedis_command_t;
 
+typedef struct cedis_command_response {
+	int status;
+	void *data;
+} cedis_command_res_t;
+
 void cedis_dump_command(cedis_command_t *command);
-int cedis_handle_command(cedis_command_t *command);
+cedis_command_res_t *cedis_handle_command(cedis_command_t *command);
 
 #endif

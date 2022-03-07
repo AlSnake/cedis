@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include "cedis/parser.h"
 #include "cedis/cmd.h"
+#include <string.h>
 
 // int handle_cedis(char *data)
 // {
@@ -73,13 +74,19 @@ int cedis_server_run(cedis_server_t *server)
 
 		// cedis_dump_command(request->command);
 
-		int ret = cedis_handle_command(request->command);
-		if (ret == -1) {
+		cedis_command_res_t *res =
+			cedis_handle_command(request->command);
+		if (!res) {
 			printf("COMMAND NOT FOUND: %s\n",
 			       request->command->cmd);
-		} else if (ret == 1) {
+		} else if (res->status != 0) {
 			printf("FAILED TO EXECUTE COMMAND: %s\n",
 			       request->command->cmd);
+		}
+
+		if (res && res->status == 0 && res->data) {
+			if (write(clifd, res->data, strlen(res->data)) == -1)
+				perror("write");
 		}
 
 		shutdown(clifd, SHUT_RDWR);
