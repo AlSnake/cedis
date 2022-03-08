@@ -11,7 +11,9 @@ typedef struct cedis_command_response {
 	void *data;
 } cedis_command_res_t;
 
-void cedis_dump_command(cedis_command_t *command);
-cedis_command_res_t *cedis_handle_command(cedis_command_t *command);
+void cedis_command_dump(cedis_command_t *command);
+cedis_command_res_t *cedis_command_handle(cedis_command_t *command);
+void cedis_command_free(cedis_command_t *command);
+void cedis_command_res_free(cedis_command_res_t *command_res);
 
 #endif

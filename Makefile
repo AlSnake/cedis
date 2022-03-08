@@ -32,6 +32,10 @@ ifeq ($(BUILD),dev)
 # "Dev" build - no optimization, and debugging symbols
 CFLAGS += -g -ggdb3 -Og -DDEBUG -finstrument-functions -fdump-rtl-expand -fsanitize=address,undefined -fno-omit-frame-pointer -Wall -Wextra -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5 -Wwrite-strings -Waggregate-return -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code
 LIBS   += -lclog-dev
+else ifeq ($(BUILD),debug)
+# "Debug" build - no optimization, and debugging symbols (for valgrind)
+CFLAGS += -g -ggdb3 -Og -DDEBUG -finstrument-functions -fdump-rtl-expand -fno-omit-frame-pointer -Wall -Wextra -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wstrict-overflow=5 -Wwrite-strings -Waggregate-return -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion -Wunreachable-code
+LIBS   += -lclog-dev
 else
 # "Release" build - optimization, and no debug symbols
 CFLAGS += -O2 -s -DNDEBUG -Wall -Wextra
@@ -48,6 +52,9 @@ all:
 
 dev:
 	make "BUILD=dev"
+
+debug:
+	make "BUILD=debug"
 
 run:
 	$(BIN)

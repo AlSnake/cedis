@@ -14,5 +14,6 @@ int main(void)
 		return 1;
 	}
 
+	cedis_server_free(cedis_server);
 	return 0;
 }

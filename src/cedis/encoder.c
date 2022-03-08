@@ -61,7 +61,7 @@ char *resp_bulk_string_encode(const char **data)
 	if (!content)
 		return NULL;
 
-	int content_lenstr_len = snprintf(NULL, 0, "%d", strlen(content));
+	int content_lenstr_len = snprintf(NULL, 0, "%ld", strlen(content));
 	int len = strlen(content) + content_lenstr_len + 6;
 
 	char *encoded = malloc(len * sizeof(char));
@@ -70,7 +70,7 @@ char *resp_bulk_string_encode(const char **data)
 		return NULL;
 	}
 
-	int written = snprintf(encoded, len, "$%d\r\n%s\r\n", strlen(content),
+	int written = snprintf(encoded, len, "$%ld\r\n%s\r\n", strlen(content),
 			       content);
 	if (written <= 0 || written != len - 1) {
 		CLOG_DEBUG(
@@ -79,6 +79,7 @@ char *resp_bulk_string_encode(const char **data)
 		return NULL;
 	}
 
+	free(content);
 	return encoded;
 }
 

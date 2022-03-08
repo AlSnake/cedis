@@ -2,7 +2,7 @@
 #include <malloc.h>
 #include <clog/clog.h>
 #include <unistd.h>
-#include "cedis/parser.h"
+#include "cedis/request.h"
 #include "cedis/cmd.h"
 #include <string.h>
 #include "cedis/encoder.h"
@@ -67,17 +67,17 @@ int cedis_server_run(cedis_server_t *server)
 			continue;
 		}
 
-		cedis_request_t *request = cedis_parse_request(buf);
+		cedis_request_t *request = cedis_request_parse(buf);
 		if (!request) {
 			CLOG_ERROR("failed to parse cedis request");
 			close(clifd);
 			continue;
 		}
 
-		// cedis_dump_command(request->command);
+		// cedis_command_dump(request->command);
 
 		cedis_command_res_t *res =
-			cedis_handle_command(request->command);
+			cedis_command_handle(request->command);
 		if (!res) {
 			char *msg =
 				reply_unknown_command(request->command->cmd);
@@ -85,6 +85,9 @@ int cedis_server_run(cedis_server_t *server)
 
 			if (write(clifd, encoded, strlen(encoded)) == -1)
 				perror("write");
+
+			free(msg);
+			free(encoded);
 		} else if (res->status != 0) {
 			char *msg = reply_custom_message(request->command->cmd,
 							 "execution failed");
@@ -92,6 +95,9 @@ int cedis_server_run(cedis_server_t *server)
 
 			if (write(clifd, encoded, strlen(encoded)) == -1)
 				perror("write");
+
+			free(msg);
+			free(encoded);
 		}
 
 		if (res && res->status == 0 && res->data) {
@@ -99,7 +105,9 @@ int cedis_server_run(cedis_server_t *server)
 				perror("write");
 		}
 
-		shutdown(clifd, SHUT_RDWR);
+		close(clifd);
+		cedis_request_free(request);
+		cedis_command_res_free(res);
 	}
 
 	if (shutdown(server->tcp_server->sockfd, SHUT_RDWR) == -1)
