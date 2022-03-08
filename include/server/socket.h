@@ -8,6 +8,6 @@ typedef struct cedis_socket {
 	unsigned int host;
 	unsigned short port;
 	int backlog;
-} socket_t;
+} cedis_socket_t;
 
 #endif

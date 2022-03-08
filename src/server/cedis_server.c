@@ -21,12 +21,12 @@ cedis_server_t *cedis_server_init(void)
 		return NULL;
 	}
 
-	socket_t sockconf = { .domain = AF_INET,
-			      .type = SOCK_STREAM,
-			      .protocol = 0,
-			      .host = INADDR_ANY,
-			      .port = 6379,
-			      .backlog = 255 };
+	cedis_socket_t sockconf = { .domain = AF_INET,
+				    .type = SOCK_STREAM,
+				    .protocol = 0,
+				    .host = INADDR_ANY,
+				    .port = 6379,
+				    .backlog = 255 };
 
 	cedis->tcp_server = tcp_server_init(sockconf);
 	if (!cedis->tcp_server) {
