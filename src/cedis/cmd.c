@@ -37,14 +37,14 @@ cedis_command_res_t *handle_ping_command(cedis_command_t *command)
 	return create_response(0, resp_bulk_string_encode(command->args));
 }
 
-void cedis_dump_command(cedis_command_t *command)
+void cedis_command_dump(cedis_command_t *command)
 {
 	printf("COMMAND: %s\n", command->cmd);
 	for (size_t i = 0; command->args[i] != NULL; i++)
 		printf("ARG: %s\n", command->args[i]);
 }
 
-cedis_command_res_t *cedis_handle_command(cedis_command_t *command)
+cedis_command_res_t *cedis_command_handle(cedis_command_t *command)
 {
 	size_t cmd = 0;
 	const char *commands[] = { "command", "info", "ping" };
@@ -68,4 +68,25 @@ cedis_command_res_t *cedis_handle_command(cedis_command_t *command)
 	}
 
 	return NULL;
+}
+
+void cedis_command_free(cedis_command_t *command)
+{
+	if (command) {
+		free(command->cmd);
+		if (command->args) {
+			for (size_t i = 0; command->args[i] != NULL; i++)
+				free(command->args[i]);
+			free(command->args);
+		}
+		free(command);
+	}
+}
+
+void cedis_command_res_free(cedis_command_res_t *command_res)
+{
+	if (command_res) {
+		free(command_res->data);
+		free(command_res);
+	}
 }

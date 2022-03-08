@@ -9,6 +9,6 @@ typedef struct cedis_server {
 
 cedis_server_t *cedis_server_init(void);
 void cedis_server_free(cedis_server_t *server);
-int cedis_server_run(cedis_server_t *server);
+int cedis_server_run(cedis_server_t *server, size_t nthreads);
 
 #endif

@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 
-tcp_server_t *tcp_server_init(socket_t sockconf)
+tcp_server_t *tcp_server_init(cedis_socket_t sockconf)
 {
 	tcp_server_t *server = malloc(sizeof(tcp_server_t));
 	if (!server) {
@@ -11,13 +11,13 @@ tcp_server_t *tcp_server_init(socket_t sockconf)
 		return NULL;
 	}
 
-	server->sock = malloc(sizeof(socket_t));
+	server->sock = malloc(sizeof(cedis_socket_t));
 	if (!server->sock) {
 		perror("malloc");
 		return NULL;
 	}
 
-	memcpy(server->sock, &sockconf, sizeof(socket_t));
+	memcpy(server->sock, &sockconf, sizeof(cedis_socket_t));
 
 	server->sa = malloc(sizeof(struct sockaddr_in));
 	if (!server->sa) {

@@ -1,16 +1,17 @@
-#include "cedis/parser.h"
+#include "cedis/request.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include "cedis/util.h"
 
-cedis_request_t *cedis_parse_request(const char *data)
+cedis_request_t *cedis_request_parse(const char *data)
 {
 	cedis_request_t *req = malloc(sizeof(cedis_request_t));
 	if (!req) {
 		perror("malloc");
 		return NULL;
 	}
+	req->command = NULL;
 
 	size_t i = 0, curr_arg = 0;
 
@@ -41,6 +42,8 @@ cedis_request_t *cedis_parse_request(const char *data)
 				req->command->args[curr_arg++] =
 					strdup(content);
 
+			free(content);
+
 			while (data[i++] != '\n')
 				;
 
@@ -50,4 +53,12 @@ cedis_request_t *cedis_parse_request(const char *data)
 	}
 
 	return req;
+}
+
+void cedis_request_free(cedis_request_t *request)
+{
+	if (request) {
+		cedis_command_free(request->command);
+		free(request);
+	}
 }

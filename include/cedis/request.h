@@ -1,5 +1,5 @@
-#ifndef _CEDIS_PARSER_H_
-#define _CEDIS_PARSER_H_
+#ifndef _CEDIS_REQUEST_H_
+#define _CEDIS_REQUEST_H_
 
 #include "cmd.h"
 
@@ -16,6 +16,7 @@ typedef struct cedis_request {
 	cedis_command_t *command;
 } cedis_request_t;
 
-cedis_request_t *cedis_parse_request(const char *data);
+cedis_request_t *cedis_request_parse(const char *data);
+void cedis_request_free(cedis_request_t *request);
 
 #endif
