@@ -11,6 +11,7 @@ cedis_request_t *cedis_request_parse(const char *data)
 		perror("malloc");
 		return NULL;
 	}
+	req->command = NULL;
 
 	size_t i = 0, curr_arg = 0;
 

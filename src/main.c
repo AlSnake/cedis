@@ -9,7 +9,7 @@ int main(void)
 		return 1;
 	}
 
-	if (cedis_server_run(cedis_server) == -1) {
+	if (cedis_server_run(cedis_server, 12) != 0) {
 		CLOG_FATAL("failed to run cedis server");
 		return 1;
 	}

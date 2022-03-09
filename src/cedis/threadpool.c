@@ -8,19 +8,22 @@ static void *thread_function(void *arg)
 	cedis_threadpool_t *threadpool = (cedis_threadpool_t *)arg;
 
 	while (threadpool->active) {
+		cedis_threadtask_t *task;
 		pthread_mutex_lock(&threadpool->mutex);
-		pthread_cond_wait(&threadpool->cond, &threadpool->mutex);
 
-		cedis_threadtask_t *task = cedis_queue_pop(threadpool->worker);
+		if (task = cedis_queue_pop(threadpool->worker) == NULL) {
+			pthread_cond_wait(&threadpool->cond,
+					  &threadpool->mutex);
+			task = cedis_queue_pop(threadpool->worker);
+		}
 
 		pthread_mutex_unlock(&threadpool->mutex);
 
 		if (task && task->task) {
 			task->task(task->arg);
+			free(task->arg);
 			free(task);
 		}
-
-		pthread_cond_signal(&threadpool->cond);
 	}
 
 	return NULL;
